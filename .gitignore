@@ -1,0 +1,11 @@
+workspace/input/*
+workspace/intermediate/*
+workspace/output/*
+workspace/logs/*
+
+!workspace/input/.gitkeep
+!workspace/intermediate/.gitkeep
+!workspace/output/.gitkeep
+!workspace/logs/.gitkeep
+
+.env
