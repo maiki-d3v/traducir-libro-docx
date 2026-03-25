@@ -8,7 +8,7 @@ Your purpose is to produce high-quality, publication-ready translations for unde
 
 You must translate in a way that reads naturally in English, as if the book had originally been written in polished academic English, while remaining faithful to the author’s meaning and pedagogical intent.
 
-The final required deliverable is a `.docx` document with formatting preserved as faithfully as possible.
+The final required deliverable is a `.xml` document with formatting preserved as faithfully as possible.
 
 ---
 
@@ -23,7 +23,7 @@ Always prioritise the following, in this order:
 5. Terminological consistency
 6. Readability and pedagogical clarity for undergraduate students
 7. British English conventions
-8. Final export suitability for `.docx`
+8. Final export suitability for `.xml`
 
 ---
 
@@ -353,7 +353,7 @@ Clarity must come from rephrasing, not from adding new content.
 
 ## Output Requirements
 
-The final required output is a `.docx` document.
+The final required output is a `.xml` document.
 
 The final output must be:
 - structurally faithful

@@ -25,7 +25,7 @@ fail() {
 usage() {
   cat <<EOF
 Usage:
-  $(basename "$0") <output.docx>
+  $(basename "$0") <output.xml>
 
 Required environment variables:
   GITHUB_EXPORT_REPO_PATH   Absolute path to the local git repository
@@ -39,7 +39,7 @@ Example:
   export GITHUB_EXPORT_REPO_PATH="/Users/you/projects/my-repo"
   export GITHUB_EXPORT_BRANCH="main"
   export GITHUB_EXPORT_TARGET_DIR="translated-books"
-  $(basename "$0") "${OUTPUT_DIR}/my_book.translated.en.docx"
+  $(basename "$0") "${OUTPUT_DIR}/my_book.translated.en.xml"
 EOF
 }
 
@@ -54,21 +54,21 @@ fi
 
 if [[ $# -lt 1 ]]; then
   usage
-  fail "Missing required argument: <output.docx>"
+  fail "Missing required argument: <output.xml>"
 fi
 
 require_cmd git
 require_cmd cp
 require_cmd mkdir
 
-SOURCE_DOCX="$1"
+SOURCE_XML="$1"
 
-if [[ ! -f "${SOURCE_DOCX}" ]]; then
-  fail "Source file does not exist: ${SOURCE_DOCX}"
+if [[ ! -f "${SOURCE_XML}" ]]; then
+  fail "Source file does not exist: ${SOURCE_XML}"
 fi
 
-if [[ "${SOURCE_DOCX##*.}" != "docx" ]]; then
-  fail "Source file must be a .docx: ${SOURCE_DOCX}"
+if [[ "${SOURCE_XML##*.}" != "xml" ]]; then
+  fail "Source file must be a .xml: ${SOURCE_XML}"
 fi
 
 : "${GITHUB_EXPORT_REPO_PATH:=}"
@@ -90,12 +90,12 @@ fi
 REPO_PATH="$(cd "${GITHUB_EXPORT_REPO_PATH}" && pwd)"
 TARGET_DIR_REL="${GITHUB_EXPORT_TARGET_DIR}"
 TARGET_DIR_ABS="${REPO_PATH}/${TARGET_DIR_REL}"
-BASENAME="$(basename "${SOURCE_DOCX}")"
+BASENAME="$(basename "${SOURCE_XML}")"
 TARGET_FILE="${TARGET_DIR_ABS}/${BASENAME}"
 
 mkdir -p "${TARGET_DIR_ABS}"
 
-log "START | source=${SOURCE_DOCX} | repo=${REPO_PATH} | target_dir=${TARGET_DIR_REL}"
+log "START | source=${SOURCE_XML} | repo=${REPO_PATH} | target_dir=${TARGET_DIR_REL}"
 
 pushd "${REPO_PATH}" >/dev/null
 
@@ -107,8 +107,8 @@ if [[ "${CURRENT_BRANCH}" != "${TARGET_BRANCH}" ]]; then
   git checkout "${TARGET_BRANCH}"
 fi
 
-cp "${SOURCE_DOCX}" "${TARGET_FILE}"
-log "COPIED | ${SOURCE_DOCX} -> ${TARGET_FILE}"
+cp "${SOURCE_XML}" "${TARGET_FILE}"
+log "COPIED | ${SOURCE_XML} -> ${TARGET_FILE}"
 
 git add "${TARGET_DIR_REL}/${BASENAME}"
 
@@ -119,7 +119,7 @@ if git diff --cached --quiet; then
 fi
 
 if [[ -z "${GITHUB_EXPORT_COMMIT_MSG}" ]]; then
-  GITHUB_EXPORT_COMMIT_MSG="Add translated DOCX: ${BASENAME}"
+  GITHUB_EXPORT_COMMIT_MSG="Add translated XML: ${BASENAME}"
 fi
 
 git commit -m "${GITHUB_EXPORT_COMMIT_MSG}"

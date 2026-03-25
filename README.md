@@ -1,6 +1,6 @@
-# traducir_libro_docx
+# traducir_libro_xml
 
-Skill para traducir libros técnicos desde `.docx` en español a inglés académico británico, preservando estructura, tipografía y contenido técnico, y generando un `.docx` final listo para revisión o exportación.
+Skill para traducir libros técnicos desde `.xml` en español a inglés académico británico, preservando estructura y contenido técnico, y generando un `.xml` final listo para revisión o exportación.
 
 ---
 
@@ -13,7 +13,7 @@ Este skill implementa un pipeline estructurado para traducir documentos técnico
 - preservación tipográfica
 - seguridad técnica
 - consistencia terminológica
-- salida final en `.docx`
+- salida final en `.xml`
 - exportación opcional a GitHub
 
 Está orientado a libros o capítulos en áreas como:
@@ -49,13 +49,13 @@ skills/traducir_libro_docx/
 │       ├── reference.md
 │       └── figure_caption.md
 ├── scripts/
-│   ├── extract_docx.py
+│   ├── extract_xml.py
 │   ├── segment_blocks.py
 │   ├── protect_content.py
 │   ├── translate_blocks.py
 │   ├── restore_content.py
 │   ├── validate_translation.py
-│   ├── reconstruct_docx.py
+│   ├── reconstruct_xml.py
 │   ├── run_pipeline.py
 │   └── export_github.sh
 └── workspace/
@@ -68,14 +68,14 @@ skills/traducir_libro_docx/
 ## Pipeline
 El pipeline se ejecuta en este orden:
 
-DOCX INPUT
+XML INPUT
 - Extract
 - Segment
 - Protect
 - Translate
 - Restore
 - Validate
-- Reconstruct DOCX
+- Reconstruct XML
 - Optional GitHub export
 
 ## Requisitos
@@ -85,11 +85,7 @@ Se recomienda Python 3.11 o superior.
 
 ### Dependencias principales
 
-Instala al menos:
-```bash
-pip install python-docx
-```
-Si luego amplías el pipeline, podrás agregar más dependencias.
+No requiere dependencias externas para extracción/reconstrucción XML en el flujo base.
 
 ## Configuración
 
@@ -131,7 +127,7 @@ export OPENAI_COMPATIBLE_API_KEY="TU_API_KEY"
 
 ## Uso rápido
 
-Coloca tu archivo **.docx** en:
+Coloca tu archivo **.xml** en:
 
 ```bash
 skills/traducir_libro_docx/workspace/input/
@@ -141,7 +137,7 @@ Ejecuta el pipeline completo:
 
 ```bash
 python skills/traducir_libro_docx/scripts/run_pipeline.py \
-  skills/traducir_libro_docx/workspace/input/tu_archivo.docx
+  skills/traducir_libro_docx/workspace/input/tu_archivo.xml
 ```
 ## Uso con exportación a GitHub
 
@@ -152,7 +148,7 @@ export GITHUB_EXPORT_TARGET_DIR="translated-books"
 export GITHUB_EXPORT_PUSH="true"
 
 python skills/traducir_libro_docx/scripts/run_pipeline.py \
-  skills/traducir_libro_docx/workspace/input/tu_archivo.docx \
+  skills/traducir_libro_docx/workspace/input/tu_archivo.xml \
   --export-github
 ``` 
 
@@ -160,7 +156,7 @@ python skills/traducir_libro_docx/scripts/run_pipeline.py \
 
 ```bash
 python skills/traducir_libro_docx/scripts/run_pipeline.py \
-  skills/traducir_libro_docx/workspace/input/tu_archivo.docx \
+  skills/traducir_libro_docx/workspace/input/tu_archivo.xml \
   --stop-after validate
 ```
 Pasos disponibles:
@@ -196,7 +192,7 @@ Ejemplos:
 
 ### Archivo final
 ```bash
-workspace/output/archivo.translated.en.docx
+workspace/output/archivo.translated.en.xml
 ```
 
 ### Logs
@@ -254,23 +250,21 @@ El pipeline está diseñado para preservar:
 
 Esta versión inicial todavía tiene limitaciones importantes:
 
-- no reconstruye ecuaciones OMML nativas de Word
-- no conserva perfectamente listas automáticas complejas
-- no reconstituye footnotes/endnotes reales
-- no mantiene cajas de texto ni objetos flotantes
-- no preserva todos los estilos avanzados del DOCX original
-- la redistribución del texto traducido entre runs es heurística
+- no reconstruye esquemas XML complejos fuera de texto (`CDATA`, entidades personalizadas, etc.)
+- no interpreta semántica avanzada si no está marcada por etiquetas explícitas
+- no preserva necesariamente el formato exacto de indentación original del XML
+- no traduce atributos ni nombres de etiquetas (solo nodos de texto)
 - la detección semántica de bloques sigue siendo basada en reglas simples
 
-Funciona bien como base operativa, pero aún no es una réplica perfecta del DOCX fuente.
+Funciona bien como base operativa, pero aún no es una réplica perfecta del XML fuente en escenarios avanzados.
 
 ## Flujo manual por scripts
 
 Si quieres ejecutar cada paso por separado:
 
 ```bash
-python skills/traducir_libro_docx/scripts/extract_docx.py \
-  skills/traducir_libro_docx/workspace/input/tu_archivo.docx
+python skills/traducir_libro_docx/scripts/extract_xml.py \
+  skills/traducir_libro_docx/workspace/input/tu_archivo.xml
 
 python skills/traducir_libro_docx/scripts/segment_blocks.py \
   skills/traducir_libro_docx/workspace/intermediate/tu_archivo.extracted.json
@@ -287,7 +281,7 @@ python skills/traducir_libro_docx/scripts/restore_content.py \
 python skills/traducir_libro_docx/scripts/validate_translation.py \
   skills/traducir_libro_docx/workspace/intermediate/tu_archivo.restored.json
 
-python skills/traducir_libro_docx/scripts/reconstruct_docx.py \
+python skills/traducir_libro_docx/scripts/reconstruct_xml.py \
   skills/traducir_libro_docx/workspace/intermediate/tu_archivo.validated.json
 ```
 
@@ -302,7 +296,7 @@ export GITHUB_EXPORT_TARGET_DIR="translated-books"
 export GITHUB_EXPORT_PUSH="true"
 
 skills/traducir_libro_docx/scripts/export_github.sh \
-  skills/traducir_libro_docx/workspace/output/tu_archivo.translated.en.docx
+  skills/traducir_libro_docx/workspace/output/tu_archivo.translated.en.xml
 ```
 
 ## Recomendación de uso
@@ -316,4 +310,4 @@ Para traducción real:
 Para producción:
 - revisa siempre workspace/logs/
 - inspecciona *.validated.json
-- abre el .docx final y compáralo con el original
+- abre el .xml final y compáralo con el original

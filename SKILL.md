@@ -1,14 +1,14 @@
 ---
-name: traducir_docx
-description: Traduce libros técnicos desde DOCX (español) a inglés académico (británico), preservando estructura, código, fórmulas y tipografía. Exporta DOCX final.
+name: traducir_xml
+description: Traduce libros técnicos desde XML (español) a inglés académico (británico), preservando estructura, código, fórmulas y tipografía. Exporta XML final.
 user-invocable: true
 ---
 
-# /traducir_docx
+# /traducir_xml
 
 ## Objetivo
 
-Ejecutar un pipeline completo y seguro para traducir documentos técnicos en formato `.docx` desde español a inglés académico (British English), orientado a estudiantes de pregrado.
+Ejecutar un pipeline completo y seguro para traducir documentos técnicos en formato `.xml` desde español a inglés académico (British English), orientado a estudiantes de pregrado.
 
 El pipeline garantiza:
 
@@ -16,7 +16,7 @@ El pipeline garantiza:
 - preservación tipográfica (negrita, cursiva, etc.)
 - preservación técnica (código, fórmulas, rutas, referencias)
 - consistencia terminológica
-- salida final en `.docx` lista para publicación
+- salida final en `.xml` lista para publicación
 - compatibilidad con exportación a GitHub
 
 ---
@@ -25,7 +25,7 @@ El pipeline garantiza:
 
 El flujo debe ejecutarse **estrictamente en este orden**:
 
-- DOCX INPUT
+- XML INPUT
 - Extract (estructura + estilos)
 - Normalize (estructura intermedia)
 - Block segmentation
@@ -35,7 +35,7 @@ El flujo debe ejecutarse **estrictamente en este orden**:
 - Restore protected content
 - Validation
 - Second-pass review
-- DOCX reconstruction
+- XML reconstruction
 - (optional) GitHub export
 
 ---
@@ -46,32 +46,32 @@ El flujo debe ejecutarse **estrictamente en este orden**:
 
 Se aceptan dos tipos de entrada:
 
-1. Archivo local `.docx`
-2. URL de GitHub que apunte a un archivo `.docx` o a un repositorio que lo contenga
+1. Archivo local `.xml`
+2. URL de GitHub que apunte a un archivo `.xml` o a un repositorio que lo contenga
 
 ## Soporte para GitHub URL
 
 Si la entrada es una URL de GitHub:
 
 - detectar si es:
-  - archivo directo (`.docx`)
+  - archivo directo (`.xml`)
   - repositorio
   - carpeta dentro de un repositorio
 
 ### Reglas
 
-- Si es un archivo `.docx`:
+- Si es un archivo `.xml`:
   - descargarlo directamente
 
 - Si es un repositorio:
   - clonar o acceder al contenido
-  - buscar automáticamente archivos `.docx`
+  - buscar automáticamente archivos `.xml`
   - si hay varios, seleccionar:
     - el principal (por nombre más relevante) o
     - solicitar selección si el sistema lo permite
 
 - Si es una carpeta:
-  - listar archivos `.docx` dentro de esa ruta
+  - listar archivos `.xml` dentro de esa ruta
   - seleccionar según criterio anterior
 
 ## Restricciones
@@ -83,7 +83,7 @@ Si la entrada es una URL de GitHub:
 
 ## Resultado esperado
 
-El sistema debe resolver la URL y convertirla en un `.docx` válido para continuar el pipeline estándar.
+El sistema debe resolver la URL y convertirla en un `.xml` válido para continuar el pipeline estándar.
 
 ## Contenido esperado
 
@@ -102,11 +102,11 @@ Puede incluir:
 
 ---
 
-# 2. EXTRACCIÓN (DOCX → ESTRUCTURA)
+# 2. EXTRACCIÓN (XML → ESTRUCTURA)
 
 ## Objetivo
 
-Convertir el `.docx` en una representación estructurada interna sin perder:
+Convertir el `.xml` en una representación estructurada interna sin perder:
 
 - jerarquía de headings
 - numeración
@@ -324,11 +324,11 @@ NO cambiar:
 
 ---
 
-# 11. RECONSTRUCCIÓN DOCX
+# 11. RECONSTRUCCIÓN XML
 
 ## Objetivo
 
-Generar el `.docx` final.
+Generar el `.xml` final.
 
 ## Debe preservar:
 
@@ -356,8 +356,8 @@ Solo si está configurado:
 
 ## Flujo
 
-1. guardar archivo `.docx`
-2. nombre determinístico (ej: chapter_02_en.docx)
+1. guardar archivo `.xml`
+2. nombre determinístico (ej: chapter_02_en.xml)
 3. ubicar en carpeta `/output/`
 4. commit
 5. push
@@ -379,7 +379,7 @@ Solo si está configurado:
 - Nunca inventar contenido
 - Nunca agregar explicaciones no presentes
 - Nunca perder formato
-- Siempre entregar `.docx`
+- Siempre entregar `.xml`
 
 ---
 
@@ -387,7 +387,7 @@ Solo si está configurado:
 
 Ejemplo:
 
-/traducir_docx archivo.docx
+/traducir_xml archivo.xml
 
 ---
 
@@ -407,7 +407,7 @@ El sistema debe:
 
 El resultado debe ser:
 
-- archivo `.docx`
+- archivo `.xml`
 - estructuralmente idéntico al original
 - traducido a inglés académico
 - técnicamente intacto

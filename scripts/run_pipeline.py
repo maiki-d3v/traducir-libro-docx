@@ -18,13 +18,13 @@ EXPORT_SCRIPT = SCRIPTS_DIR / "export_github.sh"
 
 
 PIPELINE_STEPS = [
-    ("extract", "extract_docx.py"),
+    ("extract", "extract_xml.py"),
     ("segment", "segment_blocks.py"),
     ("protect", "protect_content.py"),
     ("translate", "translate_blocks.py"),
     ("restore", "restore_content.py"),
     ("validate", "validate_translation.py"),
-    ("reconstruct", "reconstruct_docx.py"),
+    ("reconstruct", "reconstruct_xml.py"),
 ]
 
 
@@ -38,8 +38,8 @@ def run_step(script_name: str, input_path: Path) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, text=True)
 
 
-def run_export(docx_path: Path) -> subprocess.CompletedProcess:
-    cmd = [str(EXPORT_SCRIPT), str(docx_path)]
+def run_export(output_path: Path) -> subprocess.CompletedProcess:
+    cmd = [str(EXPORT_SCRIPT), str(output_path)]
     return subprocess.run(cmd, capture_output=True, text=True)
 
 
@@ -47,7 +47,7 @@ def expected_next_path(step_name: str, current_path: Path) -> Path:
     name = current_path.name
 
     if step_name == "extract":
-        out = name.replace(".docx", ".extracted.json")
+        out = name.replace(".xml", ".extracted.json")
         return INTERMEDIATE_DIR / out
 
     if step_name == "segment":
@@ -72,7 +72,7 @@ def expected_next_path(step_name: str, current_path: Path) -> Path:
 
     if step_name == "reconstruct":
         stem = name.replace(".validated.json", "")
-        return OUTPUT_DIR / f"{stem}.translated.en.docx"
+        return OUTPUT_DIR / f"{stem}.translated.en.xml"
 
     raise ValueError(f"Unknown step: {step_name}")
 
@@ -92,8 +92,8 @@ def append_process_output(pipeline_log: List[str], result: subprocess.CompletedP
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the full DOCX translation pipeline.")
-    parser.add_argument("input_docx", help="Path to the input .docx file")
+    parser = argparse.ArgumentParser(description="Run the full XML translation pipeline.")
+    parser.add_argument("input_xml", help="Path to the input .xml file")
     parser.add_argument(
         "--stop-after",
         choices=[name for name, _ in PIPELINE_STEPS],
@@ -102,19 +102,19 @@ def main() -> int:
     parser.add_argument(
         "--export-github",
         action="store_true",
-        help="Export the final DOCX to the configured Git repository using export_github.sh",
+        help="Export the final XML to the configured Git repository using export_github.sh",
     )
     args = parser.parse_args()
 
     ensure_dirs()
 
-    input_path = Path(args.input_docx).resolve()
+    input_path = Path(args.input_xml).resolve()
     if not input_path.exists():
         print(f"Error: file not found: {input_path}")
         return 1
 
-    if input_path.suffix.lower() != ".docx":
-        print("Error: input file must be a .docx")
+    if input_path.suffix.lower() != ".xml":
+        print("Error: input file must be a .xml")
         return 1
 
     current_path = input_path
@@ -178,7 +178,7 @@ def main() -> int:
             pipeline_log.append("FAILED | step=export_github")
             write_pipeline_log(pipeline_log)
             print("Pipeline completed, but GitHub export failed.")
-            print(f"Final DOCX is still available at: {current_path}")
+            print(f"Final XML is still available at: {current_path}")
             return export_result.returncode
 
         pipeline_log.append("DONE | export_github=ok")

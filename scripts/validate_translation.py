@@ -3,7 +3,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,7 +71,7 @@ def make_issue(
     category: str,
     block_id: str,
     message: str,
-    details: Dict[str, Any] | None = None,
+    details: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     return {
         "severity": severity,   # error | warning | info
